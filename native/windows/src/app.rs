@@ -359,7 +359,7 @@ fn choose(window: HWND, chosen: u32, login: bool) {
     match chosen {
         0 => {}
         ID_QUIT => quit(window),
-        ID_UPDATES => message(window, concat!("Snow Desktop 0.2.0\nOffline build. Updates are installed manually.\n\n", include_str!("../../LICENSE")), MB_OK),
+        ID_UPDATES => { message(window, concat!("Snow Desktop 0.2.0\nOffline build. Updates are installed manually.\n\n", include_str!("../../LICENSE")), MB_OK); },
         ID_CLEAR => APP.with_borrow(|app| {
             if let Some(app) = app {
                 send(app, Command::ClearSnow(!prefs::animations_enabled()));

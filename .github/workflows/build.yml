@@ -1,8 +1,5 @@
-name: Build desktop apps
+name: Legacy Electron prototype (manual)
 on:
-  push:
-    branches: [main, 'codex/**']
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
