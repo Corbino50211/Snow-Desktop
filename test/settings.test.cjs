@@ -1,0 +1,3 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {normalize,defaults}=require('../app/settings.cjs');
+test('invalid persisted settings cannot inject fields or unbounded rendering costs',()=>{const result=normalize({intensity:1e9,fps:Infinity,color:'url(https://example.com)',enabled:'yes',unknown:true});assert.equal(result.intensity,400);assert.equal(result.fps,defaults.fps);assert.equal(result.color,defaults.color);assert.equal(result.enabled,true);assert.equal(result.unknown,undefined);});
+test('valid preferences survive roundtrip',()=>{const value={...defaults,enabled:false,wind:-40,color:'#abc123'};assert.deepEqual(normalize(JSON.parse(JSON.stringify(value))),value);});

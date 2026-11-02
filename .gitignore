@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+native/**/target/
+native/.build/
+native/build/
+native/dist/
