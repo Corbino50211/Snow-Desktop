@@ -1,0 +1,44 @@
+name: Native Snow Desktop
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  physics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo test --locked --manifest-path native/core/Cargo.toml
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash native/build-mac.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Snow-Desktop-Native-macOS
+          path: native/dist/*.dmg
+          if-no-files-found: error
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo build --locked --release --bin SnowDesktop --manifest-path native/windows/Cargo.toml
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $env:SNOWHUSH_APP = (Resolve-Path native/windows/target/release/SnowDesktop.exe).Path
+          cargo build --locked --release --bin SnowDesktop-Setup --features setup --manifest-path native/windows/Cargo.toml
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force native/dist
+          Copy-Item native/windows/target/release/SnowDesktop.exe native/dist/
+          Copy-Item native/windows/target/release/SnowDesktop-Setup.exe native/dist/
+          Copy-Item native/LICENSE native/dist/LICENSE.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Snow-Desktop-Native-Windows
+          path: native/dist/*
+          if-no-files-found: error
